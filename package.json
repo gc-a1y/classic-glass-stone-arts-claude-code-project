@@ -1,0 +1,13 @@
+{
+  "name": "classic-glass-stone-arts",
+  "private": true,
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\"",
+    "build": "npm run build --workspace=frontend && npm run build --workspace=backend",
+    "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
