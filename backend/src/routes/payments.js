@@ -20,13 +20,17 @@ router.post('/create-intent', async (req, res) => {
         amount: amountCents,
         currency: 'usd',
         payment_method_types: ['us_bank_account'],
+        payment_method_options: {
+          us_bank_account: { financial_connections: { permissions: ['payment_method'] } },
+        },
         metadata: { invoiceId, method: 'ach' },
       })
     } else {
+      // automatic_payment_methods is the modern Stripe approach for card payments
       paymentIntent = await stripe.paymentIntents.create({
         amount: amountCents,
         currency: 'usd',
-        payment_method_types: ['card'],
+        automatic_payment_methods: { enabled: true },
         metadata: { invoiceId, method: 'card' },
       })
     }

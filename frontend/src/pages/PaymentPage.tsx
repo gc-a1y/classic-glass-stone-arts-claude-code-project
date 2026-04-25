@@ -14,8 +14,8 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
 
 type PaymentOption = 'ach' | 'card' | 'check' | null
 
-function StripeCheckoutForm({ invoiceId, amount, method, onSuccess }: {
-  invoiceId: string; amount: number; method: 'ach' | 'card'; onSuccess: () => void
+function StripeCheckoutForm({ invoiceId, amount, onSuccess }: {
+  invoiceId: string; amount: number; onSuccess: () => void
 }) {
   const stripe = useStripe()
   const elements = useElements()
@@ -28,12 +28,13 @@ function StripeCheckoutForm({ invoiceId, amount, method, onSuccess }: {
     setProcessing(true)
     setError('')
     try {
+      // Validate the Elements form fields first
       const { error: submitError } = await elements.submit()
       if (submitError) { setError(submitError.message || 'Payment failed'); setProcessing(false); return }
-      const { data } = await api.post('/api/payments/create-intent', { invoiceId, amount, method })
+
+      // Confirm against the payment intent already created when Elements mounted
       const { error: confirmError } = await stripe.confirmPayment({
         elements,
-        clientSecret: data.clientSecret,
         confirmParams: { return_url: `${window.location.origin}/pay/${invoiceId}?success=true` },
         redirect: 'if_required',
       })
@@ -43,8 +44,8 @@ function StripeCheckoutForm({ invoiceId, amount, method, onSuccess }: {
         onSuccess()
         toast.success('Payment successful!')
       }
-    } catch (e: any) {
-      setError(e.response?.data?.error || 'Payment failed. Please try again.')
+    } catch {
+      setError('Payment failed. Please try again.')
     } finally {
       setProcessing(false)
     }
@@ -72,19 +73,32 @@ function StripePaymentWrapper({ invoiceId, amount, method, onSuccess }: {
 }) {
   const [clientSecret, setClientSecret] = useState('')
   const [loading, setLoading] = useState(true)
+  const [initError, setInitError] = useState('')
   const surchargedAmount = method === 'card' ? amount * 1.03 : amount
 
   useEffect(() => {
+    setLoading(true)
+    setInitError('')
     api.post('/api/payments/create-intent', { invoiceId, amount: surchargedAmount, method })
       .then(({ data }) => {
         setClientSecret(data.clientSecret)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch((err) => {
+        const msg = err.response?.data?.error || err.message || 'Could not connect to payment server'
+        setInitError(msg)
+        setLoading(false)
+      })
   }, [invoiceId, surchargedAmount, method])
 
   if (loading) return <Skeleton className="h-40 w-full" />
-  if (!clientSecret) return <p className="text-red-400 text-sm">Failed to initialize payment. Please try again.</p>
+  if (initError || !clientSecret) return (
+    <div className="text-sm space-y-1">
+      <p className="text-red-400 font-medium">Failed to initialize payment.</p>
+      {initError && <p className="text-text-muted text-xs">{initError}</p>}
+      <p className="text-text-muted text-xs">Check that your Stripe keys are set correctly in backend/.env</p>
+    </div>
+  )
 
   return (
     <Elements stripe={stripePromise} options={{
@@ -100,7 +114,7 @@ function StripePaymentWrapper({ invoiceId, amount, method, onSuccess }: {
         },
       },
     }}>
-      <StripeCheckoutForm invoiceId={invoiceId} amount={surchargedAmount} method={method} onSuccess={onSuccess} />
+      <StripeCheckoutForm invoiceId={invoiceId} amount={surchargedAmount} onSuccess={onSuccess} />
     </Elements>
   )
 }
