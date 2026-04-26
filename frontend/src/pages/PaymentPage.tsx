@@ -24,15 +24,13 @@ function StripeCheckoutForm({ invoiceId, amount, onSuccess }: {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     if (!stripe || !elements) return
     setProcessing(true)
     setError('')
     try {
-      // Validate the Elements form fields first
-      const { error: submitError } = await elements.submit()
-      if (submitError) { setError(submitError.message || 'Payment failed'); setProcessing(false); return }
-
-      // Confirm against the payment intent already created when Elements mounted
+      // Confirm directly — payment intent was already created when Elements mounted.
+      // Do NOT call elements.submit() here; that is only for the deferred PI flow.
       const { error: confirmError } = await stripe.confirmPayment({
         elements,
         confirmParams: { return_url: `${window.location.origin}/pay/${invoiceId}?success=true` },
@@ -220,9 +218,11 @@ export default function PaymentPage() {
           <h2 className="text-base font-semibold text-text">Choose Payment Method</h2>
 
           {/* Option A: ACH */}
-          <div className={`card cursor-pointer transition-all duration-200 ${selected === 'ach' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}
-            onClick={() => setSelected(selected === 'ach' ? null : 'ach')}>
-            <div className="flex items-start gap-4">
+          <div className={`card transition-all duration-200 ${selected === 'ach' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}>
+            <div
+              className="flex items-start gap-4 cursor-pointer"
+              onClick={() => setSelected(selected === 'ach' ? null : 'ach')}
+            >
               <div className="w-10 h-10 rounded-full bg-green-400/10 flex items-center justify-center flex-shrink-0">
                 <Building2 size={20} className="text-green-400" />
               </div>
@@ -240,16 +240,18 @@ export default function PaymentPage() {
               </div>
             </div>
             {selected === 'ach' && (
-              <div className="mt-4 pt-4 border-t border-border">
+              <div className="mt-4 pt-4 border-t border-border" onClick={e => e.stopPropagation()}>
                 <StripePaymentWrapper invoiceId={invoiceId!} amount={balanceDue} method="ach" onSuccess={() => setSuccess(true)} />
               </div>
             )}
           </div>
 
           {/* Option B: Card */}
-          <div className={`card cursor-pointer transition-all duration-200 ${selected === 'card' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}
-            onClick={() => setSelected(selected === 'card' ? null : 'card')}>
-            <div className="flex items-start gap-4">
+          <div className={`card transition-all duration-200 ${selected === 'card' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}>
+            <div
+              className="flex items-start gap-4 cursor-pointer"
+              onClick={() => setSelected(selected === 'card' ? null : 'card')}
+            >
               <div className="w-10 h-10 rounded-full bg-blue-400/10 flex items-center justify-center flex-shrink-0">
                 <CreditCard size={20} className="text-blue-400" />
               </div>
@@ -264,7 +266,7 @@ export default function PaymentPage() {
               </div>
             </div>
             {selected === 'card' && (
-              <div className="mt-4 pt-4 border-t border-border">
+              <div className="mt-4 pt-4 border-t border-border" onClick={e => e.stopPropagation()}>
                 <div className="bg-yellow-400/5 border border-yellow-400/20 rounded-input p-3 mb-4">
                   <p className="text-xs text-yellow-400">A 3% processing fee ({formatCurrency(balanceDue * 0.03)}) will be added to your payment total of {formatCurrency(balanceDue * 1.03)}. This surcharge is applied in accordance with applicable state regulations.</p>
                 </div>
@@ -274,9 +276,11 @@ export default function PaymentPage() {
           </div>
 
           {/* Option C: Check */}
-          <div className={`card cursor-pointer transition-all duration-200 ${selected === 'check' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}
-            onClick={() => setSelected(selected === 'check' ? null : 'check')}>
-            <div className="flex items-start gap-4">
+          <div className={`card transition-all duration-200 ${selected === 'check' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}>
+            <div
+              className="flex items-start gap-4 cursor-pointer"
+              onClick={() => setSelected(selected === 'check' ? null : 'check')}
+            >
               <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
                 <Mail size={20} className="text-gold" />
               </div>
