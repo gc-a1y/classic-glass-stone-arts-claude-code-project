@@ -115,15 +115,15 @@ export default function DashboardPage() {
             <AreaChart data={stats?.revenue_by_month || []} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
               <defs>
                 <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#B8973A" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#B8973A" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#C9A84C" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#C9A84C" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false} />
-              <XAxis dataKey="month" tick={{ fill: '#888888', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#888888', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E2DC" vertical={false} />
+              <XAxis dataKey="month" tick={{ fill: '#6B6560', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#6B6560', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
               <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="revenue" stroke="#B8973A" strokeWidth={2} fill="url(#revenueGrad)" dot={{ fill: '#B8973A', r: 4 }} activeDot={{ r: 6, fill: '#D4AF55' }} />
+              <Area type="monotone" dataKey="revenue" stroke="#C9A84C" strokeWidth={2} fill="url(#revenueGrad)" dot={{ fill: '#C9A84C', r: 4 }} activeDot={{ r: 6, fill: '#E0BF6F' }} />
             </AreaChart>
           </ResponsiveContainer>
         )}

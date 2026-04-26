@@ -18,8 +18,8 @@ interface AnalyticsData {
 }
 
 const CHART_TOOLTIP_STYLE = {
-  contentStyle: { background: '#111111', border: '1px solid #2A2A2A', borderRadius: '8px', color: '#F5F5F5', fontSize: '12px' },
-  labelStyle: { color: '#888888' },
+  contentStyle: { background: '#FFFFFF', border: '1px solid #E5E2DC', borderRadius: '8px', color: '#1A1714', fontSize: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' },
+  labelStyle: { color: '#6B6560' },
 }
 
 const CustomBarTooltip = ({ active, payload, label }: any) => {
@@ -100,7 +100,7 @@ export default function AnalyticsPage() {
         paymentBreakdown: [
           { name: 'ACH / Bank', value: methodCounts.ach, color: '#22c55e' },
           { name: 'Card', value: methodCounts.card, color: '#3b82f6' },
-          { name: 'Check', value: methodCounts.check, color: '#B8973A' },
+          { name: 'Check', value: methodCounts.check, color: '#C9A84C' },
         ].filter(d => d.value > 0),
         topClients,
         avgJobSize,
@@ -154,11 +154,11 @@ export default function AnalyticsPage() {
         ) : (
           <ResponsiveContainer width="100%" height={224}>
             <BarChart data={data?.revenueByMonth || []} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false} />
-              <XAxis dataKey="month" tick={{ fill: '#888888', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#888888', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E2DC" vertical={false} />
+              <XAxis dataKey="month" tick={{ fill: '#6B6560', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#6B6560', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
               <Tooltip content={<CustomBarTooltip />} />
-              <Bar dataKey="revenue" fill="#B8973A" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              <Bar dataKey="revenue" fill="#C9A84C" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -189,7 +189,7 @@ export default function AnalyticsPage() {
                   ))}
                 </Pie>
                 <Legend
-                  formatter={(value) => <span style={{ color: '#888888', fontSize: '12px' }}>{value}</span>}
+                  formatter={(value) => <span style={{ color: '#6B6560', fontSize: '12px' }}>{value}</span>}
                   iconType="circle"
                 />
                 <Tooltip

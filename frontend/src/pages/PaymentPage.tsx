@@ -116,13 +116,23 @@ function StripePaymentWrapper({ invoiceId, amount, method, onSuccess }: {
     currency: 'usd',
     paymentMethodTypes: method === 'ach' ? ['us_bank_account'] : ['card'],
     appearance: {
-      theme: 'night' as const,
+      theme: 'stripe' as const,
       variables: {
-        colorPrimary: '#B8973A',
-        colorBackground: '#1A1A1A',
-        colorText: '#F5F5F5',
-        colorDanger: '#ef4444',
+        colorPrimary: '#C9A84C',
+        colorBackground: '#FFFFFF',
+        colorText: '#1A1714',
+        colorTextSecondary: '#6B6560',
+        colorDanger: '#dc2626',
         borderRadius: '8px',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      },
+      rules: {
+        '.Input': { border: '1px solid #E5E2DC', boxShadow: 'none' },
+        '.Input:focus': { border: '1px solid #C9A84C', boxShadow: '0 0 0 3px rgba(201,168,76,0.15)' },
+        '.Label': { color: '#6B6560', fontWeight: '500', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '0.06em' },
+        '.Tab': { border: '1px solid #E5E2DC', background: '#F7F6F3' },
+        '.Tab:hover': { border: '1px solid #C9A84C' },
+        '.Tab--selected': { border: '1px solid #C9A84C', background: '#FFFFFF', boxShadow: '0 0 0 3px rgba(201,168,76,0.15)' },
       },
     },
   }

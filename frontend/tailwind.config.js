@@ -7,17 +7,17 @@ export default {
         bg: '#FFFFFF',
         surface: {
           DEFAULT: '#FFFFFF',
-          2: '#F5F5F5',
+          2: '#F7F6F3',
         },
         gold: {
-          DEFAULT: '#B8973A',
-          light: '#D4AF55',
-          dark: '#8A6F2A',
+          DEFAULT: '#C9A84C',
+          light: '#E0BF6F',
+          dark: '#A88930',
         },
-        border: '#E0E0E0',
+        border: '#E5E2DC',
         text: {
-          DEFAULT: '#0A0A0A',
-          muted: '#666666',
+          DEFAULT: '#1A1714',
+          muted: '#6B6560',
         },
       },
       fontFamily: {
@@ -28,8 +28,8 @@ export default {
         input: '8px',
       },
       boxShadow: {
-        gold: '0 0 20px rgba(184,151,58,0.15)',
-        'gold-lg': '0 0 40px rgba(184,151,58,0.25)',
+        gold: '0 0 20px rgba(201,168,76,0.15)',
+        'gold-lg': '0 0 40px rgba(201,168,76,0.25)',
       },
     },
   },

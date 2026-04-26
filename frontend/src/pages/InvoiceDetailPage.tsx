@@ -192,7 +192,7 @@ export default function InvoiceDetailPage() {
                   <button onClick={sendEmail} disabled={saving} className="btn-secondary flex items-center gap-2 text-sm">
                     <Mail size={15} /> Send Email
                   </button>
-                  <button onClick={() => setMarkPaidModal(true)} className="btn-secondary flex items-center gap-2 text-sm text-green-400 border-green-800/50 hover:border-green-400">
+                  <button onClick={() => setMarkPaidModal(true)} className="btn-secondary flex items-center gap-2 text-sm text-green-600 border-green-200 hover:border-green-500 hover:text-green-600">
                     <CheckCircle size={15} /> Mark Paid
                   </button>
                 </>
