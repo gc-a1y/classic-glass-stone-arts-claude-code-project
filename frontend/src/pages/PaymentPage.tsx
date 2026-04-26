@@ -14,8 +14,16 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
 
 type PaymentOption = 'ach' | 'card' | 'check' | null
 
-function StripeCheckoutForm({ invoiceId, amount, onSuccess }: {
-  invoiceId: string; amount: number; onSuccess: () => void
+// Deferred intent flow:
+// 1. Elements initialised with mode:'payment' (no clientSecret upfront)
+// 2. User fills in card details
+// 3. On submit: elements.submit() → create PI on server → confirmPayment with clientSecret
+// This avoids the React StrictMode double-effect bug (which created two PIs and
+// left Elements out of sync with state) and eliminates automatic_payment_methods
+// redirect ambiguity.
+
+function StripeCheckoutForm({ invoiceId, amount, method, onSuccess }: {
+  invoiceId: string; amount: number; method: 'ach' | 'card'; onSuccess: () => void
 }) {
   const stripe = useStripe()
   const elements = useElements()
@@ -28,22 +36,44 @@ function StripeCheckoutForm({ invoiceId, amount, onSuccess }: {
     if (!stripe || !elements) return
     setProcessing(true)
     setError('')
+
     try {
-      // Confirm directly — payment intent was already created when Elements mounted.
-      // Do NOT call elements.submit() here; that is only for the deferred PI flow.
-      const { error: confirmError } = await stripe.confirmPayment({
+      // Step 1 — validate the Elements form fields
+      const { error: submitError } = await elements.submit()
+      if (submitError) {
+        setError(submitError.message || 'Please check your payment details.')
+        return
+      }
+
+      // Step 2 — create the payment intent on the server
+      const { data } = await api.post('/api/payments/create-intent', { invoiceId, amount, method })
+      if (!data?.clientSecret) {
+        setError('Server did not return a payment secret. Check backend logs.')
+        return
+      }
+
+      // Step 3 — confirm with the freshly-created clientSecret
+      const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
         elements,
+        clientSecret: data.clientSecret,
         confirmParams: { return_url: `${window.location.origin}/pay/${invoiceId}?success=true` },
         redirect: 'if_required',
       })
+
       if (confirmError) {
-        setError(confirmError.message || 'Payment failed')
-      } else {
+        setError(`${confirmError.message} (code: ${confirmError.code ?? 'unknown'})`)
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         onSuccess()
         toast.success('Payment successful!')
+      } else if (paymentIntent && paymentIntent.status === 'processing') {
+        onSuccess()
+        toast.success('Payment is processing — you will receive confirmation shortly.')
+      } else {
+        setError(`Unexpected payment status: ${paymentIntent?.status ?? 'none'}. Contact support.`)
       }
-    } catch {
-      setError('Payment failed. Please try again.')
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.message || 'Payment failed. Please try again.'
+      setError(msg)
     } finally {
       setProcessing(false)
     }
@@ -53,14 +83,20 @@ function StripeCheckoutForm({ invoiceId, amount, onSuccess }: {
     <form onSubmit={handleSubmit} className="space-y-4">
       <PaymentElement options={{ layout: 'tabs' }} />
       {error && (
-        <div className="flex items-center gap-2 text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-input px-3 py-2">
-          <AlertCircle size={16} />
-          {error}
+        <div className="flex items-start gap-2 text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-input px-3 py-2">
+          <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+          <span>{error}</span>
         </div>
       )}
-      <button type="submit" disabled={processing || !stripe} className="btn-primary w-full flex items-center justify-center gap-2">
-        {processing ? <div className="w-4 h-4 border-2 border-bg border-t-transparent rounded-full animate-spin" /> : <CheckCircle size={16} />}
-        {processing ? 'Processing...' : `Pay ${formatCurrency(amount)}`}
+      <button
+        type="submit"
+        disabled={processing || !stripe || !elements}
+        className="btn-primary w-full flex items-center justify-center gap-2"
+      >
+        {processing
+          ? <><div className="w-4 h-4 border-2 border-bg border-t-transparent rounded-full animate-spin" /> Processing...</>
+          : <><CheckCircle size={16} /> Pay {formatCurrency(amount)}</>
+        }
       </button>
     </form>
   )
@@ -69,50 +105,36 @@ function StripeCheckoutForm({ invoiceId, amount, onSuccess }: {
 function StripePaymentWrapper({ invoiceId, amount, method, onSuccess }: {
   invoiceId: string; amount: number; method: 'ach' | 'card'; onSuccess: () => void
 }) {
-  const [clientSecret, setClientSecret] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [initError, setInitError] = useState('')
   const surchargedAmount = method === 'card' ? amount * 1.03 : amount
+  const amountCents = Math.round(surchargedAmount * 100)
 
-  useEffect(() => {
-    setLoading(true)
-    setInitError('')
-    api.post('/api/payments/create-intent', { invoiceId, amount: surchargedAmount, method })
-      .then(({ data }) => {
-        setClientSecret(data.clientSecret)
-        setLoading(false)
-      })
-      .catch((err) => {
-        const msg = err.response?.data?.error || err.message || 'Could not connect to payment server'
-        setInitError(msg)
-        setLoading(false)
-      })
-  }, [invoiceId, surchargedAmount, method])
-
-  if (loading) return <Skeleton className="h-40 w-full" />
-  if (initError || !clientSecret) return (
-    <div className="text-sm space-y-1">
-      <p className="text-red-400 font-medium">Failed to initialize payment.</p>
-      {initError && <p className="text-text-muted text-xs">{initError}</p>}
-      <p className="text-text-muted text-xs">Check that your Stripe keys are set correctly in backend/.env</p>
-    </div>
-  )
+  // Initialise Elements in deferred mode — clientSecret comes later at submit time.
+  // paymentMethodTypes must match what the server will create.
+  const elementsOptions = {
+    mode: 'payment' as const,
+    amount: amountCents,
+    currency: 'usd',
+    paymentMethodTypes: method === 'ach' ? ['us_bank_account'] : ['card'],
+    appearance: {
+      theme: 'night' as const,
+      variables: {
+        colorPrimary: '#B8973A',
+        colorBackground: '#1A1A1A',
+        colorText: '#F5F5F5',
+        colorDanger: '#ef4444',
+        borderRadius: '8px',
+      },
+    },
+  }
 
   return (
-    <Elements stripe={stripePromise} options={{
-      clientSecret,
-      appearance: {
-        theme: 'night',
-        variables: {
-          colorPrimary: '#B8973A',
-          colorBackground: '#1A1A1A',
-          colorText: '#F5F5F5',
-          colorDanger: '#ef4444',
-          borderRadius: '8px',
-        },
-      },
-    }}>
-      <StripeCheckoutForm invoiceId={invoiceId} amount={surchargedAmount} onSuccess={onSuccess} />
+    <Elements stripe={stripePromise} options={elementsOptions}>
+      <StripeCheckoutForm
+        invoiceId={invoiceId}
+        amount={surchargedAmount}
+        method={method}
+        onSuccess={onSuccess}
+      />
     </Elements>
   )
 }

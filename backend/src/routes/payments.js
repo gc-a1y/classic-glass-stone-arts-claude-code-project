@@ -26,11 +26,13 @@ router.post('/create-intent', async (req, res) => {
         metadata: { invoiceId, method: 'ach' },
       })
     } else {
-      // automatic_payment_methods is the modern Stripe approach for card payments
+      // Must match the paymentMethodTypes declared in the frontend Elements initialisation.
+      // automatic_payment_methods cannot be used with the deferred-intent flow when
+      // the Elements was initialised with explicit paymentMethodTypes.
       paymentIntent = await stripe.paymentIntents.create({
         amount: amountCents,
         currency: 'usd',
-        automatic_payment_methods: { enabled: true },
+        payment_method_types: ['card'],
         metadata: { invoiceId, method: 'card' },
       })
     }
