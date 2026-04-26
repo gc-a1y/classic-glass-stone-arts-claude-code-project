@@ -13,15 +13,15 @@ function StatCard({ label, value, sub, icon: Icon, loading }: {
 }) {
   if (loading) return <SkeletonStatCard />
   return (
-    <div className="stat-card hover:shadow-gold transition-all duration-300 group">
-      <div className="flex items-start justify-between">
-        <p className="text-xs font-medium text-text-muted uppercase tracking-wider">{label}</p>
-        <div className="w-8 h-8 rounded-input bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
+    <div className="stat-card group">
+      <div className="flex items-start justify-between mb-3">
+        <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest leading-tight">{label}</p>
+        <div className="w-9 h-9 rounded-input bg-gold/[0.08] flex items-center justify-center flex-shrink-0 group-hover:bg-gold/[0.14] transition-colors">
           <Icon size={16} className="text-gold" />
         </div>
       </div>
-      <p className="text-2xl font-bold text-text mt-2">{value}</p>
-      {sub && <p className="text-xs text-text-muted">{sub}</p>}
+      <p className="text-[28px] font-bold text-text leading-none tracking-tight">{value}</p>
+      {sub && <p className="text-xs text-text-muted mt-1.5">{sub}</p>}
     </div>
   )
 }

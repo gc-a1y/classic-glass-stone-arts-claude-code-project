@@ -195,15 +195,18 @@ export default function PaymentPage() {
   )
 
   if (success || invoice.status === 'paid') return (
-    <div className="min-h-screen bg-bg flex items-center justify-center p-4">
-      <div className="card text-center max-w-md w-full shadow-gold-lg">
-        <div className="w-16 h-16 bg-green-400/10 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle size={32} className="text-green-400" />
+    <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center p-4">
+      <div className="card text-center max-w-md w-full animate-scale-in" style={{ boxShadow: '0 8px 32px rgba(26,23,20,0.10)' }}>
+        <img src="/logo.png" alt="Classic Glass & Stone Arts" className="h-14 w-auto object-contain mx-auto mb-6" />
+        <div className="w-16 h-16 bg-emerald-50 border border-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <CheckCircle size={30} className="text-emerald-600" />
         </div>
-        <h1 className="text-2xl font-bold text-text">Payment Confirmed</h1>
-        <p className="text-text-muted mt-2">Thank you! Your payment for <strong className="text-text">{invoice.invoice_number}</strong> has been received.</p>
-        <p className="text-gold font-semibold text-lg mt-4">{formatCurrency(invoice.total)}</p>
-        <p className="text-xs text-text-muted mt-4">You'll receive a confirmation email shortly. For questions, contact Classic Glass & Stone Arts.</p>
+        <h1 className="text-2xl font-bold text-text tracking-tight">Payment Confirmed</h1>
+        <p className="text-text-muted mt-2 text-sm leading-relaxed">Thank you! Your payment for <strong className="text-text font-semibold">{invoice.invoice_number}</strong> has been received.</p>
+        <div className="my-5 py-4 border-y border-border">
+          <p className="text-3xl font-bold text-gold tracking-tight">{formatCurrency(invoice.total)}</p>
+        </div>
+        <p className="text-xs text-text-muted leading-relaxed">A confirmation email will be sent shortly. For questions, contact <strong className="text-text">Classic Glass & Stone Arts</strong>.</p>
       </div>
     </div>
   )
@@ -211,93 +214,98 @@ export default function PaymentPage() {
   const balanceDue = invoice.total - (invoice.amount_paid || 0)
 
   return (
-    <div className="min-h-screen bg-bg py-8 px-4">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#FAFAF8] py-10 px-4">
+      <div className="max-w-lg mx-auto space-y-6">
+
         {/* Branding */}
-        <div className="text-center">
+        <div className="text-center pb-2">
           <img
             src="/logo.png"
             alt="Classic Glass & Stone Arts"
             className="h-20 w-auto object-contain mx-auto mb-3"
           />
-          <p className="text-text-muted text-sm">Secure Payment Portal</p>
+          <div className="inline-flex items-center gap-1.5 bg-white border border-border rounded-full px-3 py-1 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+            <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Secure Payment Portal</span>
+          </div>
         </div>
 
         {/* Invoice Summary */}
-        <div className="card">
-          <div className="flex justify-between items-start mb-4">
+        <div className="card" style={{ boxShadow: '0 2px 12px rgba(26,23,20,0.07)' }}>
+          <div className="flex justify-between items-start">
             <div>
-              <p className="text-xs text-text-muted uppercase tracking-wider">Invoice</p>
-              <p className="font-bold text-text">{invoice.invoice_number}</p>
-              <p className="text-sm text-text-muted mt-0.5">For: {(invoice.client as any)?.name}</p>
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest">Invoice</p>
+              <p className="font-bold text-text text-lg leading-tight mt-0.5">{invoice.invoice_number}</p>
+              <p className="text-sm text-text-muted mt-1">For: <span className="text-text font-medium">{(invoice.client as any)?.name}</span></p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-text-muted">Due Date</p>
-              <p className="text-sm text-text">{formatDate(invoice.due_date)}</p>
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest">Due Date</p>
+              <p className="text-sm font-medium text-text mt-0.5">{formatDate(invoice.due_date)}</p>
             </div>
           </div>
-          <div className="border-t border-border pt-3 flex justify-between items-center">
+          <div className="border-t border-border mt-4 pt-4 flex justify-between items-center">
             <span className="font-semibold text-text">Balance Due</span>
-            <span className="text-2xl font-bold text-gold">{formatCurrency(balanceDue)}</span>
+            <span className="text-3xl font-bold text-gold tracking-tight">{formatCurrency(balanceDue)}</span>
           </div>
         </div>
 
         {/* Payment Options */}
         <div className="space-y-3">
-          <h2 className="text-base font-semibold text-text">Choose Payment Method</h2>
+          <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest px-0.5">Choose Payment Method</p>
 
           {/* Option A: ACH */}
-          <div className={`card transition-all duration-200 ${selected === 'ach' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}>
+          <div className={`card transition-all duration-200 ${selected === 'ach' ? 'border-gold' : 'border-border hover:border-gold/40'}`}
+            style={selected === 'ach' ? { boxShadow: '0 0 0 3px rgba(201,168,76,0.12), 0 2px 12px rgba(26,23,20,0.06)' } : {}}>
             <div
-              className="flex items-start gap-4 cursor-pointer"
+              className="flex items-start gap-4 cursor-pointer select-none"
               onClick={() => setSelected(selected === 'ach' ? null : 'ach')}
             >
-              <div className="w-10 h-10 rounded-full bg-green-400/10 flex items-center justify-center flex-shrink-0">
-                <Building2 size={20} className="text-green-400" />
+              <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Building2 size={19} className="text-emerald-600" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-semibold text-text">Bank Transfer (ACH)</p>
-                  <span className="badge bg-green-400/10 text-green-400 text-xs">✓ Recommended</span>
+                  <span className="badge bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px]">Recommended</span>
                 </div>
-                <p className="text-sm text-text-muted mt-0.5">Free for you — no extra fees</p>
-                <p className="text-xs text-text-muted mt-1">Settlement: 3–5 business days</p>
+                <p className="text-sm text-text-muted mt-0.5">No fees · 3–5 business day settlement</p>
               </div>
-              <div className="text-right">
-                <p className="font-bold text-green-400">{formatCurrency(balanceDue)}</p>
-                <p className="text-xs text-text-muted">No fees</p>
+              <div className="text-right flex-shrink-0">
+                <p className="font-bold text-emerald-600 text-base">{formatCurrency(balanceDue)}</p>
+                <p className="text-[11px] text-text-muted">No fees</p>
               </div>
             </div>
             {selected === 'ach' && (
-              <div className="mt-4 pt-4 border-t border-border" onClick={e => e.stopPropagation()}>
+              <div className="mt-5 pt-5 border-t border-border" onClick={e => e.stopPropagation()}>
                 <StripePaymentWrapper invoiceId={invoiceId!} amount={balanceDue} method="ach" onSuccess={() => setSuccess(true)} />
               </div>
             )}
           </div>
 
           {/* Option B: Card */}
-          <div className={`card transition-all duration-200 ${selected === 'card' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}>
+          <div className={`card transition-all duration-200 ${selected === 'card' ? 'border-gold' : 'border-border hover:border-gold/40'}`}
+            style={selected === 'card' ? { boxShadow: '0 0 0 3px rgba(201,168,76,0.12), 0 2px 12px rgba(26,23,20,0.06)' } : {}}>
             <div
-              className="flex items-start gap-4 cursor-pointer"
+              className="flex items-start gap-4 cursor-pointer select-none"
               onClick={() => setSelected(selected === 'card' ? null : 'card')}
             >
-              <div className="w-10 h-10 rounded-full bg-blue-400/10 flex items-center justify-center flex-shrink-0">
-                <CreditCard size={20} className="text-blue-400" />
+              <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <CreditCard size={19} className="text-blue-600" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p className="font-semibold text-text">Credit or Debit Card</p>
-                <p className="text-sm text-text-muted mt-0.5">3% processing fee applied</p>
-                <p className="text-xs text-yellow-400/80 mt-1">⚠ Surcharge disclosed per Virginia regulations</p>
+                <p className="text-sm text-text-muted mt-0.5">3% processing fee applies</p>
+                <p className="text-[11px] text-amber-600 mt-1 font-medium">Surcharge per Virginia state regulations</p>
               </div>
-              <div className="text-right">
-                <p className="font-bold text-blue-400">{formatCurrency(balanceDue * 1.03)}</p>
-                <p className="text-xs text-text-muted">+3% fee</p>
+              <div className="text-right flex-shrink-0">
+                <p className="font-bold text-blue-600 text-base">{formatCurrency(balanceDue * 1.03)}</p>
+                <p className="text-[11px] text-text-muted">+3% fee</p>
               </div>
             </div>
             {selected === 'card' && (
-              <div className="mt-4 pt-4 border-t border-border" onClick={e => e.stopPropagation()}>
-                <div className="bg-yellow-400/5 border border-yellow-400/20 rounded-input p-3 mb-4">
-                  <p className="text-xs text-yellow-400">A 3% processing fee ({formatCurrency(balanceDue * 0.03)}) will be added to your payment total of {formatCurrency(balanceDue * 1.03)}. This surcharge is applied in accordance with applicable state regulations.</p>
+              <div className="mt-5 pt-5 border-t border-border" onClick={e => e.stopPropagation()}>
+                <div className="bg-amber-50 border border-amber-200/60 rounded-input p-3 mb-4">
+                  <p className="text-xs text-amber-700">A 3% processing fee ({formatCurrency(balanceDue * 0.03)}) will be added, bringing your total to <strong>{formatCurrency(balanceDue * 1.03)}</strong>. Applied per applicable state regulations.</p>
                 </div>
                 <StripePaymentWrapper invoiceId={invoiceId!} amount={balanceDue} method="card" onSuccess={() => setSuccess(true)} />
               </div>
@@ -305,40 +313,41 @@ export default function PaymentPage() {
           </div>
 
           {/* Option C: Check */}
-          <div className={`card transition-all duration-200 ${selected === 'check' ? 'border-gold shadow-gold' : 'hover:border-gold/50'}`}>
+          <div className={`card transition-all duration-200 ${selected === 'check' ? 'border-gold' : 'border-border hover:border-gold/40'}`}
+            style={selected === 'check' ? { boxShadow: '0 0 0 3px rgba(201,168,76,0.12), 0 2px 12px rgba(26,23,20,0.06)' } : {}}>
             <div
-              className="flex items-start gap-4 cursor-pointer"
+              className="flex items-start gap-4 cursor-pointer select-none"
               onClick={() => setSelected(selected === 'check' ? null : 'check')}
             >
-              <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
-                <Mail size={20} className="text-gold" />
+              <div className="w-10 h-10 rounded-full bg-gold/[0.08] border border-gold/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Mail size={19} className="text-gold" />
               </div>
               <div className="flex-1">
                 <p className="font-semibold text-text">Pay by Check</p>
-                <p className="text-sm text-text-muted mt-0.5">No fees — mail or drop off</p>
+                <p className="text-sm text-text-muted mt-0.5">No fees · Mail or drop off</p>
               </div>
-              <div className="text-right">
-                <p className="font-bold text-gold">{formatCurrency(balanceDue)}</p>
-                <p className="text-xs text-text-muted">No fees</p>
+              <div className="text-right flex-shrink-0">
+                <p className="font-bold text-gold text-base">{formatCurrency(balanceDue)}</p>
+                <p className="text-[11px] text-text-muted">No fees</p>
               </div>
             </div>
             {selected === 'check' && (
-              <div className="mt-4 pt-4 border-t border-border text-sm space-y-2">
-                <p className="text-text font-medium">Make check payable to:</p>
-                <p className="text-gold font-bold text-base">Classic Glass & Stone Arts</p>
+              <div className="mt-5 pt-5 border-t border-border text-sm space-y-2">
+                <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest">Make check payable to</p>
+                <p className="text-gold font-bold text-lg">Classic Glass & Stone Arts</p>
                 {businessAddress && (
-                  <>
-                    <p className="text-text-muted text-xs mt-1">Mailing address:</p>
-                    <p className="text-text">{businessAddress}</p>
-                  </>
+                  <div className="mt-2">
+                    <p className="text-[11px] font-semibold text-text-muted uppercase tracking-widest mb-1">Mailing Address</p>
+                    <p className="text-text text-sm">{businessAddress}</p>
+                  </div>
                 )}
                 {checkInstructions && (
                   <div className="bg-surface-2 rounded-input p-3 mt-2">
                     <p className="text-text-muted text-xs whitespace-pre-line">{checkInstructions}</p>
                   </div>
                 )}
-                <p className="text-text-muted text-xs pt-2">
-                  Please include invoice #{invoice.invoice_number} in the memo line. Your invoice will be marked as paid upon receipt.
+                <p className="text-text-muted text-xs pt-1">
+                  Include invoice <strong className="text-text">#{invoice.invoice_number}</strong> in the memo line.
                 </p>
               </div>
             )}
@@ -346,7 +355,7 @@ export default function PaymentPage() {
         </div>
 
         <p className="text-center text-xs text-text-muted pb-8">
-          Payments secured by Stripe • Classic Glass & Stone Arts
+          Payments secured by Stripe · Classic Glass & Stone Arts
         </p>
       </div>
     </div>

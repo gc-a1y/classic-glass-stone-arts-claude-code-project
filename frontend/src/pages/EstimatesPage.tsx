@@ -83,38 +83,61 @@ export default function EstimatesPage() {
             action={{ label: 'Create Estimate', to: '/estimates/new' }}
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="border-b border-border">
-                <tr>
-                  <th className="table-header">ID</th>
-                  <th className="table-header">Client</th>
-                  <th className="table-header">Total</th>
-                  <th className="table-header">Status</th>
-                  <th className="table-header">Created</th>
-                  <th className="table-header">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((e) => (
-                  <tr key={e.id} className="hover:bg-surface-2/50 transition-colors">
-                    <td className="table-cell">
-                      <span className="font-mono text-xs text-text-muted">EST-{e.id.slice(0, 6).toUpperCase()}</span>
-                    </td>
-                    <td className="table-cell font-medium">{(e.client as any)?.name || '—'}</td>
-                    <td className="table-cell font-semibold text-gold">{formatCurrency(e.total)}</td>
-                    <td className="table-cell"><StatusBadge status={e.status} /></td>
-                    <td className="table-cell text-text-muted">{formatDate(e.created_at)}</td>
-                    <td className="table-cell">
-                      <Link to={`/estimates/${e.id}`} className="text-xs text-gold hover:text-gold-light font-medium">
-                        View →
-                      </Link>
-                    </td>
+          <>
+            {/* Mobile card list */}
+            <div className="md:hidden divide-y divide-border">
+              {filtered.map((e) => (
+                <Link
+                  key={e.id}
+                  to={`/estimates/${e.id}`}
+                  className="flex items-start justify-between p-4 hover:bg-surface-2/60 active:bg-surface-2 transition-colors"
+                >
+                  <div className="min-w-0 flex-1 pr-4 space-y-1">
+                    <p className="font-mono text-[11px] font-medium text-text-muted tracking-wide">EST-{e.id.slice(0, 6).toUpperCase()}</p>
+                    <p className="font-semibold text-text truncate">{(e.client as any)?.name || '—'}</p>
+                    <p className="text-xs text-text-muted">{formatDate(e.created_at)}</p>
+                  </div>
+                  <div className="flex-shrink-0 text-right space-y-1.5">
+                    <p className="font-bold text-gold text-base">{formatCurrency(e.total)}</p>
+                    <div className="flex justify-end"><StatusBadge status={e.status} /></div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-border">
+                  <tr>
+                    <th className="table-header">ID</th>
+                    <th className="table-header">Client</th>
+                    <th className="table-header">Total</th>
+                    <th className="table-header">Status</th>
+                    <th className="table-header">Created</th>
+                    <th className="table-header">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {filtered.map((e) => (
+                    <tr key={e.id} className="hover:bg-surface-2/50 transition-colors">
+                      <td className="table-cell">
+                        <span className="font-mono text-xs text-text-muted">EST-{e.id.slice(0, 6).toUpperCase()}</span>
+                      </td>
+                      <td className="table-cell font-medium">{(e.client as any)?.name || '—'}</td>
+                      <td className="table-cell font-semibold text-gold">{formatCurrency(e.total)}</td>
+                      <td className="table-cell"><StatusBadge status={e.status} /></td>
+                      <td className="table-cell text-text-muted">{formatDate(e.created_at)}</td>
+                      <td className="table-cell">
+                        <Link to={`/estimates/${e.id}`} className="text-xs text-gold hover:text-gold-light font-medium">
+                          View →
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

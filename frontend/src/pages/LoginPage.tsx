@@ -26,21 +26,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo / Brand */}
-        <div className="text-center mb-10">
+    <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center p-4">
+      <div className="w-full max-w-sm animate-slide-up">
+
+        {/* Logo */}
+        <div className="text-center mb-8">
           <img
             src="/logo.png"
             alt="Classic Glass & Stone Arts"
-            className="h-20 w-auto object-contain mx-auto mb-4"
+            className="h-20 w-auto object-contain mx-auto mb-3"
           />
-          <p className="text-text-muted text-sm">Business Portal</p>
+          <p className="text-[11px] font-semibold text-text-muted uppercase tracking-[0.18em]">
+            Business Portal
+          </p>
         </div>
 
-        {/* Login Card */}
-        <div className="card shadow-gold">
-          <h2 className="text-lg font-semibold text-text mb-6">Sign in to your portal</h2>
+        {/* Card */}
+        <div className="card" style={{ boxShadow: '0 4px 24px rgba(26,23,20,0.08)' }}>
+          <h2 className="text-lg font-bold text-text tracking-tight mb-5">Sign in</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="label">Email address</label>
@@ -68,12 +71,12 @@ export default function LoginPage() {
             </div>
             <button
               type="submit"
-              className="btn-primary w-full mt-2 flex items-center justify-center gap-2"
+              className="btn-primary w-full mt-1 flex items-center justify-center gap-2 py-3"
               disabled={loading}
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-bg border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                   Signing in...
                 </>
               ) : (
@@ -83,7 +86,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-text-muted text-xs mt-6">
+        <p className="text-center text-[11px] text-text-muted mt-6 tracking-wide">
           Protected portal — authorized personnel only
         </p>
       </div>

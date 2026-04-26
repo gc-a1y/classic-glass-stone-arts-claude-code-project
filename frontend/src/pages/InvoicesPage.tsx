@@ -72,36 +72,59 @@ export default function InvoicesPage() {
             action={{ label: 'Create Invoice', to: '/invoices/new' }}
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="border-b border-border">
-                <tr>
-                  <th className="table-header">Invoice #</th>
-                  <th className="table-header">Client</th>
-                  <th className="table-header">Total</th>
-                  <th className="table-header">Due Date</th>
-                  <th className="table-header">Status</th>
-                  <th className="table-header">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-surface-2/50 transition-colors">
-                    <td className="table-cell font-mono text-xs font-medium text-text">{inv.invoice_number}</td>
-                    <td className="table-cell font-medium">{(inv.client as any)?.name || '—'}</td>
-                    <td className="table-cell font-semibold text-gold">{formatCurrency(inv.total)}</td>
-                    <td className="table-cell text-text-muted">{formatDate(inv.due_date)}</td>
-                    <td className="table-cell"><StatusBadge status={inv.status} /></td>
-                    <td className="table-cell">
-                      <Link to={`/invoices/${inv.id}`} className="text-xs text-gold hover:text-gold-light font-medium">
-                        View →
-                      </Link>
-                    </td>
+          <>
+            {/* Mobile card list */}
+            <div className="md:hidden divide-y divide-border">
+              {filtered.map((inv) => (
+                <Link
+                  key={inv.id}
+                  to={`/invoices/${inv.id}`}
+                  className="flex items-start justify-between p-4 hover:bg-surface-2/60 active:bg-surface-2 transition-colors"
+                >
+                  <div className="min-w-0 flex-1 pr-4 space-y-1">
+                    <p className="font-mono text-[11px] font-medium text-text-muted tracking-wide">{inv.invoice_number}</p>
+                    <p className="font-semibold text-text truncate">{(inv.client as any)?.name || '—'}</p>
+                    <p className="text-xs text-text-muted">Due {formatDate(inv.due_date)}</p>
+                  </div>
+                  <div className="flex-shrink-0 text-right space-y-1.5">
+                    <p className="font-bold text-gold text-base">{formatCurrency(inv.total)}</p>
+                    <div className="flex justify-end"><StatusBadge status={inv.status} /></div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-border">
+                  <tr>
+                    <th className="table-header">Invoice #</th>
+                    <th className="table-header">Client</th>
+                    <th className="table-header">Total</th>
+                    <th className="table-header">Due Date</th>
+                    <th className="table-header">Status</th>
+                    <th className="table-header">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {filtered.map((inv) => (
+                    <tr key={inv.id} className="hover:bg-surface-2/50 transition-colors">
+                      <td className="table-cell font-mono text-xs font-medium text-text">{inv.invoice_number}</td>
+                      <td className="table-cell font-medium">{(inv.client as any)?.name || '—'}</td>
+                      <td className="table-cell font-semibold text-gold">{formatCurrency(inv.total)}</td>
+                      <td className="table-cell text-text-muted">{formatDate(inv.due_date)}</td>
+                      <td className="table-cell"><StatusBadge status={inv.status} /></td>
+                      <td className="table-cell">
+                        <Link to={`/invoices/${inv.id}`} className="text-xs text-gold hover:text-gold-light font-medium">
+                          View →
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

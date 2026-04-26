@@ -124,39 +124,63 @@ export default function ClientsPage() {
         ) : filtered.length === 0 ? (
           <EmptyState icon={Users} title="No clients yet" description="Add your first client or import from CSV." action={{ label: 'Add Client', onClick: openAdd }} />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="border-b border-border">
-                <tr>
-                  <th className="table-header">Name</th>
-                  <th className="table-header">Email</th>
-                  <th className="table-header">Phone</th>
-                  <th className="table-header">Address</th>
-                  <th className="table-header">Added</th>
-                  <th className="table-header">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(c => (
-                  <tr key={c.id} className="hover:bg-surface-2/50 transition-colors">
-                    <td className="table-cell">
-                      <Link to={`/clients/${c.id}`} className="font-medium hover:text-gold transition-colors">{c.name}</Link>
-                    </td>
-                    <td className="table-cell text-text-muted">{c.email || '—'}</td>
-                    <td className="table-cell text-text-muted">{c.phone || '—'}</td>
-                    <td className="table-cell text-text-muted text-xs max-w-[180px] truncate">{c.address || '—'}</td>
-                    <td className="table-cell text-text-muted">{formatDate(c.created_at)}</td>
-                    <td className="table-cell">
-                      <div className="flex gap-3">
-                        <button onClick={() => openEdit(c)} className="text-xs text-gold hover:text-gold-light font-medium">Edit</button>
-                        <button onClick={() => archiveClient(c.id)} className="text-xs text-text-muted hover:text-red-400">Archive</button>
-                      </div>
-                    </td>
+          <>
+            {/* Mobile card list */}
+            <div className="md:hidden divide-y divide-border">
+              {filtered.map(c => (
+                <div key={c.id} className="p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-0.5 min-w-0">
+                      <Link to={`/clients/${c.id}`} className="font-semibold text-text hover:text-gold transition-colors block truncate">
+                        {c.name}
+                      </Link>
+                      {c.email && <p className="text-sm text-text-muted truncate">{c.email}</p>}
+                      {c.phone && <p className="text-xs text-text-muted">{c.phone}</p>}
+                    </div>
+                    <p className="text-xs text-text-muted flex-shrink-0">{formatDate(c.created_at)}</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <button onClick={() => openEdit(c)} className="text-xs font-semibold text-gold hover:text-gold-dark transition-colors py-1">Edit</button>
+                    <button onClick={() => archiveClient(c.id)} className="text-xs font-semibold text-text-muted hover:text-red-500 transition-colors py-1">Archive</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-border">
+                  <tr>
+                    <th className="table-header">Name</th>
+                    <th className="table-header">Email</th>
+                    <th className="table-header">Phone</th>
+                    <th className="table-header">Address</th>
+                    <th className="table-header">Added</th>
+                    <th className="table-header">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {filtered.map(c => (
+                    <tr key={c.id} className="hover:bg-surface-2/50 transition-colors">
+                      <td className="table-cell">
+                        <Link to={`/clients/${c.id}`} className="font-medium hover:text-gold transition-colors">{c.name}</Link>
+                      </td>
+                      <td className="table-cell text-text-muted">{c.email || '—'}</td>
+                      <td className="table-cell text-text-muted">{c.phone || '—'}</td>
+                      <td className="table-cell text-text-muted text-xs max-w-[180px] truncate">{c.address || '—'}</td>
+                      <td className="table-cell text-text-muted">{formatDate(c.created_at)}</td>
+                      <td className="table-cell">
+                        <div className="flex gap-3">
+                          <button onClick={() => openEdit(c)} className="text-xs text-gold hover:text-gold-light font-medium">Edit</button>
+                          <button onClick={() => archiveClient(c.id)} className="text-xs text-text-muted hover:text-red-400">Archive</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
