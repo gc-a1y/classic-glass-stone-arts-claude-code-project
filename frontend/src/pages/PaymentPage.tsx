@@ -205,14 +205,11 @@ export default function PaymentPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Branding */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-surface border border-border mb-4 shadow-gold">
-            <svg viewBox="0 0 48 48" className="w-8 h-8" fill="none">
-              <polygon points="24,4 44,36 4,36" stroke="#B8973A" strokeWidth="2.5" fill="none"/>
-              <polygon points="24,14 38,36 10,36" stroke="#B8973A" strokeWidth="1.5" fill="rgba(184,151,58,0.08)"/>
-              <circle cx="24" cy="24" r="4" fill="#B8973A" />
-            </svg>
-          </div>
-          <h1 className="text-xl font-bold text-text">Classic Glass & Stone Arts</h1>
+          <img
+            src="/logo.png"
+            alt="Classic Glass & Stone Arts"
+            className="h-20 w-auto object-contain mx-auto mb-3"
+          />
           <p className="text-text-muted text-sm">Secure Payment Portal</p>
         </div>
 

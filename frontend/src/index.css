@@ -19,11 +19,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #111111;
+    background: #F5F5F5;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #2A2A2A;
+    background: #D0D0D0;
     border-radius: 3px;
   }
 
@@ -34,7 +34,7 @@
 
 @layer components {
   .card {
-    @apply bg-surface border border-border rounded-card p-6;
+    @apply bg-surface border border-border rounded-card p-6 shadow-sm;
   }
 
   .card-2 {
@@ -42,7 +42,7 @@
   }
 
   .btn-primary {
-    @apply bg-gold text-bg font-semibold px-4 py-2.5 rounded-input transition-all duration-200 hover:bg-gold-light hover:shadow-gold active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-gold text-white font-semibold px-4 py-2.5 rounded-input transition-all duration-200 hover:bg-gold-light hover:shadow-gold active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
@@ -54,15 +54,15 @@
   }
 
   .btn-danger {
-    @apply bg-red-900/30 text-red-400 font-medium px-4 py-2.5 rounded-input border border-red-800/50 transition-all duration-200 hover:bg-red-900/50 active:scale-95;
+    @apply bg-red-50 text-red-600 font-medium px-4 py-2.5 rounded-input border border-red-200 transition-all duration-200 hover:bg-red-100 active:scale-95;
   }
 
   .input {
-    @apply w-full bg-surface-2 border border-border rounded-input px-3 py-2.5 text-text placeholder:text-text-muted text-sm focus:outline-none focus:border-gold focus:shadow-gold transition-all duration-200;
+    @apply w-full bg-white border border-border rounded-input px-3 py-2.5 text-text placeholder:text-text-muted text-sm focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-200;
   }
 
   .select {
-    @apply w-full bg-surface-2 border border-border rounded-input px-3 py-2.5 text-text text-sm focus:outline-none focus:border-gold transition-all duration-200 cursor-pointer;
+    @apply w-full bg-white border border-border rounded-input px-3 py-2.5 text-text text-sm focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-200 cursor-pointer;
   }
 
   .label {
@@ -74,7 +74,7 @@
   }
 
   .table-header {
-    @apply text-left text-xs font-semibold text-text-muted uppercase tracking-wider py-3 px-4;
+    @apply text-left text-xs font-semibold text-text-muted uppercase tracking-wider py-3 px-4 bg-surface-2;
   }
 
   .table-cell {
@@ -109,7 +109,7 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #1A1A1A 25%, #2A2A2A 50%, #1A1A1A 75%);
+  background: linear-gradient(90deg, #EFEFEF 25%, #E0E0E0 50%, #EFEFEF 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 6px;

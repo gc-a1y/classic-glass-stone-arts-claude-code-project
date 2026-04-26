@@ -4,20 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#0A0A0A',
+        bg: '#FFFFFF',
         surface: {
-          DEFAULT: '#111111',
-          2: '#1A1A1A',
+          DEFAULT: '#FFFFFF',
+          2: '#F5F5F5',
         },
         gold: {
           DEFAULT: '#B8973A',
           light: '#D4AF55',
           dark: '#8A6F2A',
         },
-        border: '#2A2A2A',
+        border: '#E0E0E0',
         text: {
-          DEFAULT: '#F5F5F5',
-          muted: '#888888',
+          DEFAULT: '#0A0A0A',
+          muted: '#666666',
         },
       },
       fontFamily: {

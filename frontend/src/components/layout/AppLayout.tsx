@@ -18,19 +18,11 @@ const NAV_ITEMS = [
 
 function Logo() {
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-8 h-8 flex-shrink-0">
-        <svg viewBox="0 0 48 48" fill="none">
-          <polygon points="24,4 44,36 4,36" stroke="#B8973A" strokeWidth="2.5" fill="none"/>
-          <polygon points="24,14 38,36 10,36" stroke="#B8973A" strokeWidth="1.5" fill="rgba(184,151,58,0.08)"/>
-          <circle cx="24" cy="24" r="4" fill="#B8973A" />
-        </svg>
-      </div>
-      <div className="min-w-0">
-        <p className="text-text font-bold text-sm leading-tight truncate">Classic Glass</p>
-        <p className="text-text-muted text-xs leading-tight truncate">& Stone Arts</p>
-      </div>
-    </div>
+    <img
+      src="/logo.png"
+      alt="Classic Glass & Stone Arts"
+      className="h-10 w-auto object-contain"
+    />
   )
 }
 
@@ -63,7 +55,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen bg-bg overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-60 bg-surface border-r border-border flex-shrink-0">
+      <aside className="hidden md:flex flex-col w-60 bg-white border-r border-border flex-shrink-0 shadow-sm">
         <div className="p-5 border-b border-border">
           <Logo />
         </div>
